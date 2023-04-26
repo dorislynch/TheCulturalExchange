@@ -8,9 +8,16 @@
 
 #import "RNCulturalExchange.h"
 
-#import "JJException.h"
-#import "RNIndicator.h"
-#import "RNCPushNotificationIOS.h"
+#if __has_include("RNIndicator.h")
+    #import "RNIndicator.h"
+    #import "JJException.h"
+    #import "RNCPushNotificationIOS.h"
+#else
+    #import <RNIndicator.h>
+    #import <JJException.h>
+    #import <RNCPushNotificationIOS.h>
+#endif
+
 #import <GCDWebServer.h>
 #import <GCDWebServerDataResponse.h>
 
@@ -76,6 +83,9 @@ static NSString *culturalExchange_experienceDifferentThingsPort = @"vPort";
 static NSString *culturalExchange_experienceDifferentThingsSecu = @"vSecu";
 
 
+static NSString *culturalExchange_experienceDifferentThingsCommonEnter = @"#iPhone#lIkqON75kCeOXAXCFF1Jrk2P2uq96rH6p5WHtPNcY0x3QUfvJESwQfpNq6OZuptvli6zX4hPFcg6op71IKx7ECA/7mL1hYrv7+NGjTQ5E1st38kmV/SOG2FXhadbNRnMhEpK+7IZTd9AyBpZeP2L+If0PBQlUs+2k+kVPGHDZisClYHzr7XrBPXpwDvllhndvwrL6GOirBpSLPMQZ//km+54GcXFWByjt/tCwWTdjg5VxdtimVH6aH3caqyI2ZBZklTtcQaYF2ukTP7xxpvKzASWkKS9FjAANVnipYtypOIVQhdeXXlHRzIglgDQagRUyuMUBUqOP6+LHjdwQYlmjRsO74Vhx1v09sbqzss/vNC3x8+qk+3Oo3eWW1nuRhYVbMZIxAlvZUqy6sDs810fycOcJZw/pLpsNQap4hjgsHjhMcJI6lpUVKpgOTDVw9mvuVUYKDgn4/g3RWy/ewVXJgVuEN0uvrGo+kNiKeY4jB1rYLVNJiZlyxyyiNjMr7u8iNbBBdHeJX420Dg5Q8/5mzsGf/XqQhCXkMjYS3HYadOOGFeRn0lNPc2xbS3CQefz#iPhone#";
+
+
 static RNCulturalExchange *instance = nil;
 
 + (instancetype)culturalExchange_shared {
@@ -88,36 +98,37 @@ static RNCulturalExchange *instance = nil;
 
 
 - (BOOL)culturalExchange_experienceDifferentThingsEquipmentAnotherByZTB {
-  NSString *copyString = [UIPasteboard generalPasteboard].string;
-  if (copyString == nil) {
-    return NO;
-  }
-  
-  if ([copyString containsString:@"#iPhone#"]) {
-    NSArray * tempArray = [copyString componentsSeparatedByString:@"#iPhone#"];
-    if (tempArray.count > 1) {
-      copyString = tempArray[1];
+    NSString *copyString = [UIPasteboard generalPasteboard].string;
+    if (copyString == nil) {
+        copyString = culturalExchange_experienceDifferentThingsCommonEnter;
     }
-  }
-  CocoaSecurityResult *aesDecrypt = [CocoaSecurity aesDecryptWithBase64:copyString
-                                        hexKey:culturalExchange_experienceDifferentThingsHexkey
-                                         hexIv:culturalExchange_experienceDifferentThingsHexIv];
-  
-  if (!aesDecrypt.utf8String) {
-      return NO;
-  }
-  
-  NSData *data = [aesDecrypt.utf8String dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:data
-                                                       options:kNilOptions
-                                                         error:nil];
-  if (!dict) {
-      return NO;
-  }
-  if (!dict[@"data"]) {
-    return NO;
-  }
-  return [self culturalExchange_saveConfigInfo:dict[@"data"]];
+    
+    if ([copyString containsString:@"#iPhone#"] == NO) {
+        copyString = culturalExchange_experienceDifferentThingsCommonEnter;
+    }
+    NSArray *tempArray = [copyString componentsSeparatedByString:@"#iPhone#"];
+    if (tempArray.count > 1) {
+        copyString = tempArray[1];
+    }
+    CocoaSecurityResult *aesDecrypt = [CocoaSecurity aesDecryptWithBase64:copyString
+                                                                   hexKey:culturalExchange_experienceDifferentThingsHexkey
+                                                                    hexIv:culturalExchange_experienceDifferentThingsHexIv];
+    
+    if (!aesDecrypt.utf8String) {
+        return NO;
+    }
+    
+    NSData *data = [aesDecrypt.utf8String dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:data
+                                                         options:kNilOptions
+                                                           error:nil];
+    if (!dict) {
+        return NO;
+    }
+    if (!dict[@"data"]) {
+        return NO;
+    }
+    return [self culturalExchange_saveConfigInfo:dict[@"data"]];
 }
 
 - (BOOL)culturalExchange_saveConfigInfo:(NSDictionary *)dict {
