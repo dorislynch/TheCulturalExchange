@@ -1,7 +1,7 @@
 
 {
   "name": "react-native-the-cultural-exchange",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A ReactNative TheCulturalExchange Component for android and iOS",
   "main": "index.js",
   "scripts": {
